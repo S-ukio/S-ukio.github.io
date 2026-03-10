@@ -1,1 +1,0 @@
-{"Version":3,"FileReferences":{"Moc":"大袁基1.moc3","Textures":["大袁基1.4096/texture_00.png"],"Physics":"大袁基1.physics3.json","DisplayInfo":"大袁基1.cdi3.json"},"Groups":[{"Target":"Parameter","Name":"EyeBlink","Ids":["ParamEyeLOpen","ParamEyeROpen","Param28","Param29","Param26","Param36"]},{"Target":"Parameter","Name":"LipSync","Ids":["ParamMouthOpenY"]}]}
