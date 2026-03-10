@@ -142,116 +142,68 @@
   isToc: false,
   pageType: 'tag'
 }</script><style>
-  /* ====================================================== */
-  /* 1. 全局：感知亮暗的网站底层背景色 */
-  /* ====================================================== */
-  
-  /* 亮色模式底色：法式暖灰 */
+  /* 1. 感知亮暗的全局变量定义 */
   :root {
-    --site-bg-color: #e9e7e2;
-    --card-bg-color: rgba(255, 255, 255, 0.85);
-    --text-color: #333;
-    --panel-btn-color: #fff;
+    --site-bg-color: #e9e7e2; /* 亮色底色：暖米灰 */
+    --card-bg-color: rgba(255, 255, 255, 0.85); /* 暖白半透卡片 */
+    --text-color: #333333; /* 亮色文字：深灰 */
   }
-  
-  /* 黑夜模式底色：优雅深灰色 */
   [data-theme="dark"] {
-    --site-bg-color: #1a1c1e;
-    --card-bg-color: rgba(30, 32, 34, 0.85);
-    --text-color: #eee;
-    --panel-btn-color: #fff;
-  }
-  
-  /* 应用全局背景色 */
-  background: var(--site-bg-color) !important;
-  transition: background-color 0.4s ease;
-
-  /* ====================================================== */
-  /* 2. 核心：卡片和氛围面板样式 */
-  /* ====================================================== */
-
-  .recent-post-item {
-    background: var(--card-bg-color) !important;
-    backdrop-filter: blur(12px) saturate(130%);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1) !important;
-    transition: all 0.3s ease, background-color 0.4s ease;
-  }
-  
-  .recent-post-item,
-  .recent-post-item a,
-  .recent-post-item .article-title,
-  .recent-post-item .article-meta,
-  .recent-post-item .content {
-    color: var(--text-color) !important;
+    --site-bg-color: #1a1c1e; /* 暗色底色：深灰黑 */
+    --card-bg-color: rgba(35, 37, 39, 0.85); /* 深灰半透卡片 */
+    --text-color: #eeeeee; /* 暗色文字：浅白 */
   }
 
-  .recent-post-item:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.15) !important;
-  }
-
-  .card-widget {
-    background: var(--card-bg-color) !important;
-    backdrop-filter: blur(10px);
-    border-radius: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+  /* 2. 应用全局背景与容器透明化 */
+  body, #body-wrap {
+    background-color: var(--site-bg-color) !important;
+    background-image: none !important;
     transition: background-color 0.4s ease;
   }
-  
-  .card-widget,
-  .card-widget a,
-  .card-widget .item-headline {
+  #content-inner, #page, .layout, #web_bg {
+    background: transparent !important;
+  }
+
+  /* 3. 文章卡片样式与文字颜色修复 */
+  .recent-post-item, .card-widget {
+    background: var(--card-bg-color) !important; 
+    backdrop-filter: blur(12px) saturate(130%);
+    border-radius: 16px !important; /* 圆润风格 */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08) !important;
+    transition: all 0.3s ease;
+  }
+
+  /* 解决黑夜模式看不见字的核心：强制所有层级文字跟随变量 */
+  .recent-post-item *, .card-widget * {
     color: var(--text-color) !important;
   }
+  .recent-post-item a:hover { color: #49B1F5 !important; }
 
+  /* 4. 氛围控制器：极简边缘感应面板 (不挡操作) */
   #atmosphere-ctrl {
     position: fixed;
-    left: 15px;
-    top: 60%;
+    left: -38px; /* 平时缩进，只留边缘 */
+    top: 50%;
     transform: translateY(-50%);
-    background: rgba(255, 255, 255, 0.2);
-    backdrop-filter: blur(8px);
-    padding: 12px 8px;
-    border-radius: 40px;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    padding: 20px 8px;
+    border-radius: 0 40px 40px 0;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 30px;
     z-index: 10001;
     opacity: 0.2;
-    transition: all 0.4s ease;
-    border: 1px solid rgba(255,255,255,0.2);
+    transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    border: 1px solid rgba(255,255,255,0.1);
   }
+  #atmosphere-ctrl:hover { opacity: 1; left: 0; background: rgba(255, 255, 255, 0.3); }
+  .ctrl-btn { cursor: pointer; color: #fff !important; font-size: 18px; text-align: center; list-style: none; }
+  .ctrl-btn:hover { transform: scale(1.3); color: #49B1F5 !important; }
 
-  #atmosphere-ctrl:hover {
-    opacity: 1;
-    left: 20px;
-    background: rgba(255, 255, 255, 0.4);
-  }
-
-  .ctrl-btn {
-    cursor: pointer;
-    color: var(--panel-btn-color) !important;
-    font-size: 20px;
-    transition: 0.3s;
-    text-align: center;
-  }
-
-  .ctrl-btn:hover {
-    transform: scale(1.3);
-    color: #49B1F5 !important;
-  }
-
-  #atmosphere-canvas {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    z-index: 9999;
-    pointer-events: none;
-  }
+  /* 画布层 */
+  #atmosphere-canvas { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: 9999; pointer-events: none; }
 </style>
 <meta name="generator" content="Hexo 8.1.1"></head><body><div class="bg-animation" id="web_bg" style="background-color: #E6EBF0;"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img text-center"><img src="/img/avatar/20230502200633_78ec7.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data text-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div></div></div></div><div class="page" id="body-wrap"><header class="not-home-page" id="page-header" style="background-image: url(/img/cover/%E8%A2%81%E5%9F%BA%C2%B7CG4.jpg);"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">ukio</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> Home</span></a></div><div class="menus_item"><span class="site-page group"><i class="fa-fw fas fa-list"></i><span> List</span><i class="fas fa-chevron-down"></i></span><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li></ul></div></div><div id="toggle-menu"><span class="site-page"><i class="fas fa-bars fa-fw"></i></span></div></div></nav><div id="page-site-info"><h1 id="site-title">目录穿越</h1></div></header><main class="layout" id="content-inner"><div id="tag"><div class="article-sort-title">标签 - 目录穿越</div><div class="article-sort"><div class="article-sort-item year">2026</div><div class="article-sort-item"><a class="article-sort-item-img" href="/2026/03/09/Grafana-CVE-2021-43798-Vuln-Analysis/" title="Grafana 目录穿越漏洞实战："><img src="/img/cover/%E5%B0%8F%E5%A5%B3%E5%AD%A9.png" alt="Grafana 目录穿越漏洞实战：" onerror="this.onerror=null;this.src='/img/404.jpg'"></a><div class="article-sort-item-info"><div class="article-sort-item-time"><i class="far fa-calendar-alt"></i><time class="post-meta-date-created" datetime="2026-03-09T15:30:00.000Z" title="发表于 2026-03-09 23:30:00">2026-03-09</time></div><a class="article-sort-item-title" href="/2026/03/09/Grafana-CVE-2021-43798-Vuln-Analysis/" title="Grafana 目录穿越漏洞实战：">Grafana 目录穿越漏洞实战：</a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/avatar/20230502200633_78ec7.jpeg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">ukio</div><div class="author-info-description">技术随笔和生活记录</div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">4</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">1</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/S-ukio"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons"><a class="social-icon" href="https://github.com/S-ukio" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a><a class="social-icon" href="mailto:2804238315@qq.com" target="_blank" title="Email"><i class="fas fa-envelope" style="color: #4a7dbe;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/03/09/Grafana-CVE-2021-43798-Vuln-Analysis/" title="Grafana 目录穿越漏洞实战："><img src="/img/cover/%E5%B0%8F%E5%A5%B3%E5%AD%A9.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Grafana 目录穿越漏洞实战："/></a><div class="content"><a class="title" href="/2026/03/09/Grafana-CVE-2021-43798-Vuln-Analysis/" title="Grafana 目录穿越漏洞实战：">Grafana 目录穿越漏洞实战：</a><time datetime="2026-03-09T15:30:00.000Z" title="发表于 2026-03-09 23:30:00">2026-03-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/26/ukio/" title="无标题"><img src="/img/cover/%E5%88%98%E8%BE%A9%C2%B7CG3.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="无标题"/></a><div class="content"><a class="title" href="/2026/01/26/ukio/" title="无标题">无标题</a><time datetime="2026-01-26T08:05:06.080Z" title="发表于 2026-01-26 16:05:06">2026-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/26/test/" title="test"><img src="/img/cover/%E8%A2%81%E5%9F%BA%C2%B7CG4.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="test"/></a><div class="content"><a class="title" href="/2026/01/26/test/" title="test">test</a><time datetime="2026-01-26T07:12:25.000Z" title="发表于 2026-01-26 15:12:25">2026-01-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/01/26/hello-world/" title="Hello World"><img src="/img/cover/%E5%88%98%E8%BE%A9%C2%B7CG9.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Hello World"/></a><div class="content"><a class="title" href="/2026/01/26/hello-world/" title="Hello World">Hello World</a><time datetime="2026-01-26T05:43:16.864Z" title="发表于 2026-01-26 13:43:16">2026-01-26</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
             <i class="fas fa-folder-open"></i>
@@ -260,7 +212,7 @@
           </div>
           <ul class="card-category-list" id="aside-cat-list">
             <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E7%BD%91%E7%BB%9C%E5%AE%89%E5%85%A8/"><span class="card-category-list-name">网络安全</span><span class="card-category-list-count">1</span></a></li>
-          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" style="font-size: 1.1em; color: #999">漏洞复现</a> <a href="/tags/%E7%9B%AE%E5%BD%95%E7%A9%BF%E8%B6%8A/" style="font-size: 1.1em; color: #999">目录穿越</a> <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 1.1em; color: #999">渗透测试</a> <a href="/tags/Grafana/" style="font-size: 1.1em; color: #999">Grafana</a></div></div><div class="card-widget card-archives">
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/%E7%9B%AE%E5%BD%95%E7%A9%BF%E8%B6%8A/" style="font-size: 1.1em; color: #999">目录穿越</a> <a href="/tags/Grafana/" style="font-size: 1.1em; color: #999">Grafana</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%A4%8D%E7%8E%B0/" style="font-size: 1.1em; color: #999">漏洞复现</a> <a href="/tags/%E6%B8%97%E9%80%8F%E6%B5%8B%E8%AF%95/" style="font-size: 1.1em; color: #999">渗透测试</a></div></div><div class="card-widget card-archives">
     <div class="item-headline">
       <i class="fas fa-archive"></i>
       <span>归档</span>
@@ -288,121 +240,54 @@
         </li>
       
     </ul>
-  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">4</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-10T16:34:16.975Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ukio</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"></div><div id="atmosphere-ctrl">
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">4</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2026-03-10T17:02:07.116Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div class="footer-other"><div class="footer-copyright"><span class="copyright">&copy;&nbsp;2025 - 2026 By ukio</span><span class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 8.1.1</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.5.3</a></span></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js?v=5.5.3"></script><script src="/js/main.js?v=5.5.3"></script><div class="js-pjax"></div><div id="atmosphere-ctrl">
   <div class="ctrl-btn" onclick="setAtmos('rain')" title="细雨"><i class="fas fa-cloud-showers-heavy"></i></div>
-  <div class="ctrl-btn" onclick="setAtmos('snow')" title="雪花"><i class="fas fa-snowflake"></i></div>
+  <div class="ctrl-btn" onclick="setAtmos('snow')" title="下雪"><i class="fas fa-snowflake"></i></div>
 </div>
 <canvas id="atmosphere-canvas"></canvas>
-
 <script>
   const canvas = document.getElementById('atmosphere-canvas');
   const ctx = canvas.getContext('2d');
   let particles = [], animationId = null, currentAtmos = 'none';
-
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-
-  window.addEventListener('resize', resize);
-  resize();
-
+  function resize() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+  window.addEventListener('resize', resize); resize();
   class Particle {
-    constructor(type) {
-      this.type = type;
-      this.init();
-    }
-
+    constructor(type) { this.type = type; this.init(); }
     init() {
       this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height - canvas.height;
+      this.y = Math.random() * -canvas.height;
       this.speed = (this.type === 'rain') ? (Math.random() * 5 + 7) : (Math.random() * 0.6 + 0.8);
       this.size = (this.type === 'rain') ? 1 : (Math.random() * 3 + 2);
       this.opacity = Math.random() * 0.5 + 0.3;
       this.sway = Math.random() * 0.02;
       this.shape = Math.random() > 0.5 ? 'ball' : 'flake';
     }
-
     draw() {
       ctx.fillStyle = `rgba(255, 255, 255, ${this.opacity})`;
-      if (this.type === 'rain') {
-        ctx.fillRect(this.x, this.y, 1, 25);
-      } else {
-        if (this.shape === 'ball') {
-          ctx.beginPath();
-          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-          ctx.fill();
-        } else {
-          ctx.font = `${this.size * 3}px serif`;
-          ctx.fillText('❄', this.x, this.y);
-        }
+      if (this.type === 'rain') { ctx.fillRect(this.x, this.y, 1, 25); } 
+      else {
+        if (this.shape === 'ball') { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill(); } 
+        else { ctx.font = `${this.size * 3}px serif`; ctx.fillText('❄', this.x, this.y); }
       }
     }
-
     update() {
       this.y += this.speed;
       if (this.type === 'snow') this.x += Math.sin(this.y * this.sway) * 0.8;
       if (this.y > canvas.height) this.init();
     }
   }
-
   function loop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    particles.forEach(p => {
-      p.update();
-      p.draw();
-    });
+    particles.forEach(p => { p.update(); p.draw(); });
     animationId = requestAnimationFrame(loop);
   }
-
   function setAtmos(type) {
     if (animationId) cancelAnimationFrame(animationId);
-    particles = [];
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (currentAtmos === type) {
-      currentAtmos = 'none';
-      return;
-    }
-
+    particles = []; ctx.clearRect(0, 0, canvas.width, canvas.height);
+    if (currentAtmos === type) { currentAtmos = 'none'; return; }
     currentAtmos = type;
-
-    for (let i = 0; i < (type === 'rain' ? 100 : 50); i++) {
-      particles.push(new Particle(type));
-    }
-
+    for (let i = 0; i < (type === 'rain' ? 100 : 50); i++) particles.push(new Particle(type));
     loop();
   }
 </script>
-<div id="live2d-container"></div>
-
-<script src="https://cdn.jsdelivr.net/npm/pixi.js@6/dist/browser/pixi.min.js"></script>
-<script src="/js/live2dcubismcore.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pixi-live2d-display/dist/cubism4.min.js"></script>
-<script src="/js/live2d-local.js"></script>
-<style>
-  #live2d-container {
-    position: fixed;
-    right: 20px;
-    bottom: 0;
-    width: 280px;
-    height: 420px;
-    z-index: 9998;
-    overflow: hidden;
-    pointer-events: auto;
-  }
-
-  #live2d-container canvas {
-    width: 100% !important;
-    height: 100% !important;
-  }
-
-  @media screen and (max-width: 768px) {
-    #live2d-container {
-      width: 180px;
-      height: 260px;
-      right: 0;
-    }
-  }
-</style>
 <script id="click-heart" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-heart.min.js" async="async" mobile="false"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1.1.6/dist/click-show-text.min.js" data-mobile="false" data-text="I,LOVE,YOU" data-fontsize="15px" data-random="true" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

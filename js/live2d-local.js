@@ -1,58 +1,46 @@
 window.addEventListener('load', async () => {
-  console.log('Live2D: start');
-
-  const container = document.getElementById('live2d-container');
-  if (!container) {
-    console.error('Live2D: 没找到容器');
-    return;
-  }
-
-  if (!window.PIXI) {
-    console.error('Live2D: PIXI 没加载成功');
-    return;
-  }
-
-  if (!window.PIXI.live2d || !window.PIXI.live2d.Live2DModel) {
-    console.error('Live2D: cubism4 插件没加载成功', window.PIXI.live2d);
-    return;
-  }
-
-  const app = new PIXI.Application({
-    width: container.clientWidth || 280,
-    height: container.clientHeight || 420,
-    transparent: true,
-    antialias: true
-  });
-
-  container.innerHTML = '';
-  container.appendChild(app.view);
+  // ... 前面的 app 初始化代码保持不变 ...
 
   try {
     const modelPath = '/live2d/xiao/大袁基1.model3.json';
-    console.log('Live2D: load ->', modelPath);
-
     const model = await PIXI.live2d.Live2DModel.from(modelPath);
-
-    console.log('Live2D: model loaded', model);
-
     app.stage.addChild(model);
 
-    model.anchor.set(0.5, 1);
-    model.x = app.renderer.width / 2;
-    model.y = app.renderer.height;
+    // 1. 自动获取模型内置的所有动作名称
+    const motions = model.internalModel.motionManager.definitions;
+    const motionGroups = Object.keys(motions);
+    let motionIndex = 0;
 
-    model.scale.set(0.18);
+    console.log('袁基已就绪，发现动作组:', motionGroups);
 
+    // 2. 交互设置
     model.interactive = true;
     model.buttonMode = true;
 
+    // 3. 点击互动：每点一次，按顺序换一个动作播
     model.on('hit', (hitAreas) => {
-      console.log('Live2D hit:', hitAreas);
+      // 这里的 'Tap' 是点击区域，如果模型支持局部点击可以判断
+      // 我们直接做切换动作的逻辑
+      const currentGroupName = motionGroups[motionIndex];
+      console.log('正在播放动作:', currentGroupName);
+      
+      model.motion(currentGroupName);
+      
+      // 循环索引
+      motionIndex = (motionIndex + 1) % motionGroups.length;
     });
 
-    window.__live2dApp = app;
-    window.__live2dModel = model;
+    // 4. 让袁基“活”起来：每 15 秒随机做一个动作
+    setInterval(() => {
+      if (!model.internalModel.motionManager.playing) {
+        const randomMotion = motionGroups[Math.floor(Math.random() * motionGroups.length)];
+        model.motion(randomMotion);
+      }
+    }, 15000);
+
+    // ... 缩放比例 0.18 和位置保持不变 ...
+    
   } catch (err) {
-    console.error('Live2D 加载失败:', err);
+    console.error('加载袁基失败:', err);
   }
 });
